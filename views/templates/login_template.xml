@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Remplacer complètement la page de connexion standard d'Odoo -->
+    <template id="login" name="Custom Login Page" inherit_id="web.login" primary="True">
+        <xpath expr="//form" position="replace">
+            <form method="post" t-att-action="'/web/login' if form_view != 'signup' else '/client/register'" class="oe_login_form">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-primary text-white text-center py-3">
+                        <h3 class="mb-0">IT Asset Management</h3>
+                        <p class="mb-0">Gestion de parc informatique</p>
+                    </div>
+                    
+                    <div class="card-body p-4">
+                        <!-- Navigation entre les formulaires -->
+                        <div class="text-center mb-4">
+                            <div class="btn-group w-100">
+                                <a t-att-class="'btn btn-outline-primary ' + ('active' if form_view != 'signup' else '')" 
+                                   href="/web/login?redirect=/my">Se connecter</a>
+                                <a t-att-class="'btn btn-outline-primary ' + ('active' if form_view == 'signup' else '')" 
+                                   href="/web/signup?redirect=/my">S'inscrire</a>
+                            </div>
+                        </div>
+                        
+                        <!-- Message d'erreur -->
+                        <div t-if="error" class="alert alert-danger" t-att-style="error_style">
+                            <t t-esc="error"/>
+                        </div>
+                        
+                        <!-- Formulaire de connexion -->
+                        <t t-if="form_view != 'signup'">
+                            <div class="mb-3">
+                                <label for="login" class="form-label">Email</label>
+                                <input type="text" name="login" t-att-value="login" id="login" 
+                                       class="form-control" required="required" autofocus="autofocus"/>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Mot de passe</label>
+                                <input type="password" name="password" id="password" 
+                                       class="form-control" required="required"/>
+                            </div>
+                            
+                            <div class="d-grid gap-2 mt-4">
+                                <button type="submit" class="btn btn-primary btn-lg">Se connecter</button>
+                            </div>
+                        </t>
+                        
+                        <!-- Formulaire d'inscription -->
+                        <t t-if="form_view == 'signup'">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Nom complet</label>
+                                <input type="text" name="name" id="name" class="form-control" 
+                                       required="required"/>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="company_name" class="form-label">Nom de l'entreprise</label>
+                                <input type="text" name="company_name" id="company_name" class="form-control" 
+                                       required="required"/>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">Téléphone</label>
+                                <input type="tel" name="phone" id="phone" class="form-control"/>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="client_type" class="form-label">Type de client</label>
+                                <select name="client_type" id="client_type" class="form-select" required="required">
+                                    <option value="">-- Sélectionnez --</option>
+                                    <option value="enterprise">Entreprise</option>
+                                    <option value="government">Gouvernement</option>
+                                    <option value="education">Éducation</option>
+                                    <option value="nonprofit">Association</option>
+                                    <option value="individual">Particulier</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="signup_login" class="form-label">Email</label>
+                                <input type="email" name="login" id="signup_login" class="form-control" 
+                                       required="required"/>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Mot de passe</label>
+                                <input type="password" name="password" id="password" class="form-control" 
+                                       required="required"/>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="confirm_password" class="form-label">Confirmer le mot de passe</label>
+                                <input type="password" name="confirm_password" id="confirm_password" 
+                                       class="form-control" required="required"/>
+                            </div>
+                            
+                            <div class="d-grid gap-2 mt-4">
+                                <button type="submit" class="btn btn-primary btn-lg">Créer un compte</button>
+                            </div>
+                        </t>
+                        
+                        <!-- Champ caché pour la redirection -->
+                        <input type="hidden" name="redirect" t-att-value="redirect or '/my'"/>
+                    </div>
+                </div>
+            </form>
+        </xpath>
+    </template>
+</odoo>

@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vue Liste -->
+    <record id="view_it_contract_list" model="ir.ui.view">
+        <field name="name">it.contract.list</field>
+        <field name="model">it.contract</field>
+        <field name="arch" type="xml">
+            <list string="Contrats">
+                <field name="name"/>
+                <field name="client_id"/>
+                <field name="contract_type"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="amount" sum="Total"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Vue Kanban -->
+    <record id="view_it_contract_kanban" model="ir.ui.view">
+        <field name="name">it.contract.kanban</field>
+        <field name="model">it.contract</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="name"/>
+                <field name="reference"/>
+                <field name="client_id"/>
+                <field name="contract_type"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="state"/>
+                <field name="active"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="oe_kanban_content">
+                                <strong><field name="name"/></strong>
+                                <div><field name="reference"/></div>
+                                <div>
+                                    <span class="badge badge-pill" t-att-class="{
+                                        'badge-success': record.state.raw_value == 'confirmed',
+                                        'badge-warning': record.state.raw_value == 'draft',
+                                        'badge-secondary': !record.active.raw_value
+                                    }">
+                                        <field name="state"/>
+                                    </span>
+                                </div>
+                                <div><field name="client_id"/></div>
+                                <div><field name="contract_type"/></div>
+                                <div><field name="date_start" widget="date"/></div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Vue Formulaire -->
+    <record id="view_it_contract_form" model="ir.ui.view">
+        <field name="name">it.contract.form</field>
+        <field name="model">it.contract</field>
+        <field name="arch" type="xml">
+            <form string="Contrat">
+                <header>
+                    <button name="action_draft" type="object" 
+                            string="Remettre en brouillon" 
+                            invisible="state != 'confirmed'"/>
+                    <button name="action_confirm" type="object" 
+                            string="Confirmer" 
+                            invisible="state != 'draft'" 
+                            class="oe_highlight"/>
+                    <field name="state" widget="statusbar" 
+                           statusbar_visible="draft,confirmed"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Archivé" invisible="active"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="toggle_active" type="object" 
+                                class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_button"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Nom du contrat"/></h1>
+                        <h2><field name="reference" readonly="1"/></h2>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="client_id" required="1"/>
+                            <field name="contract_type" required="1"/>
+                            <field name="date_start" required="1"/>
+                            <field name="date_end"/>
+                        </group>
+                        <group>
+                            <field name="amount" widget="monetary" required="1"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Équipements" name="equipments">
+                            <field name="equipment_ids"/>
+                        </page>
+                        <page string="Description" name="description">
+                            <field name="description" 
+                                   placeholder="Description du contrat..."
+                                   options="{'collaborative': true}"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vue Recherche -->
+    <record id="view_it_contract_search" model="ir.ui.view">
+        <field name="name">it.contract.search</field>
+        <field name="model">it.contract</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher un contrat">
+                <field name="name"/>
+                <field name="reference"/>
+                <field name="client_id"/>
+                <field name="contract_type"/>
+                <separator/>
+                <filter name="draft" string="Brouillon" domain="[('state', '=', 'draft')]"/>
+                <filter name="confirmed" string="Confirmé" domain="[('state', '=', 'confirmed')]"/>
+                <separator/>
+                <filter name="active" string="Actifs" domain="[('active', '=', True)]"/>
+                <filter name="inactive" string="Archivés" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_by_client" string="Client" context="{'group_by': 'client_id'}"/>
+                    <filter name="group_by_type" string="Type" context="{'group_by': 'contract_type'}"/>
+                    <filter name="group_by_state" string="État" context="{'group_by': 'state'}"/>
+                </group>
+                <searchpanel>
+                    <field name="contract_type" string="Type" enable_counters="1"/>
+                    <field name="client_id" string="Client" enable_counters="1"/>
+                    <field name="state" string="État" enable_counters="1"/>
+                </searchpanel>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action Window -->
+    <record id="action_it_contract" model="ir.actions.act_window">
+        <field name="name">Contrats</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">it.contract</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="view_it_contract_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créez votre premier contrat
+            </p>
+        </field>
+    </record>
+</odoo>

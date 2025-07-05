@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vue Liste -->
+    <record id="view_it_billing_list" model="ir.ui.view">
+        <field name="name">it.billing.list</field>
+        <field name="model">it.billing</field>
+        <field name="arch" type="xml">
+            <list string="Facturations">
+                <field name="name"/>
+                <field name="client_id"/>
+                <field name="contract_id"/>
+                <field name="amount" widget="monetary"/>
+                <field name="billing_date"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Vue Kanban -->
+    <record id="view_it_billing_kanban" model="ir.ui.view">
+        <field name="name">it.billing.kanban</field>
+        <field name="model">it.billing</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="name"/>
+                <field name="client_id"/>
+                <field name="contract_id"/>
+                <field name="amount"/>
+                <field name="billing_date"/>
+                <field name="state"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="oe_kanban_content">
+                                <strong><field name="name"/></strong>
+                                <div>
+                                    <span class="badge badge-pill" t-att-class="{
+                                        'badge-success': record.state.raw_value == 'paid',
+                                        'badge-primary': record.state.raw_value == 'invoiced',
+                                        'badge-warning': record.state.raw_value == 'draft',
+                                        'badge-danger': record.state.raw_value == 'cancelled'
+                                    }">
+                                        <field name="state"/>
+                                    </span>
+                                </div>
+                                <div><field name="client_id"/></div>
+                                <div><field name="contract_id"/></div>
+                                <div><field name="amount" widget="monetary"/></div>
+                                <div><field name="billing_date" widget="date"/></div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Vue Formulaire -->
+    <record id="view_it_billing_form" model="ir.ui.view">
+        <field name="name">it.billing.form</field>
+        <field name="model">it.billing</field>
+        <field name="arch" type="xml">
+            <form string="Facturation">
+                <header>
+                    <button name="action_generate_invoice" type="object" string="Générer la facture" invisible="state != 'draft'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,invoiced,paid,cancelled"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="ex: FACT/2025/001" required="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="client_id" readonly="1"/>
+                            <field name="contract_id" required="1"/>
+                            <field name="invoice_id" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="amount" widget="monetary" readonly="1"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="billing_date" required="1"/>
+                            <field name="frequency" required="1"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vue Recherche -->
+    <record id="view_it_billing_search" model="ir.ui.view">
+        <field name="name">it.billing.search</field>
+        <field name="model">it.billing</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher une facturation">
+                <field name="name"/>
+                <field name="client_id"/>
+                <field name="contract_id"/>
+                <separator/>
+                <filter name="draft" string="Brouillon" domain="[('state', '=', 'draft')]"/>
+                <filter name="invoiced" string="Facturé" domain="[('state', '=', 'invoiced')]"/>
+                <filter name="paid" string="Payé" domain="[('state', '=', 'paid')]"/>
+                <filter name="cancelled" string="Annulé" domain="[('state', '=', 'cancelled')]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_by_client" string="Client" context="{'group_by': 'client_id'}"/>
+                    <filter name="group_by_state" string="État" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_it_billing" model="ir.actions.act_window">
+        <field name="name">Facturations</field>
+        <field name="res_model">it.billing</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="view_it_billing_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créez votre première facturation
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu -->
+    <menuitem id="menu_it_billing"
+              name="Facturations"
+              parent="menu_it_asset_root"
+              action="action_it_billing"
+              sequence="70"/>
+</odoo>

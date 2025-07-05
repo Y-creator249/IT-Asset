@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Dashboard View -->
+    <record id="view_it_asset_dashboard" model="ir.ui.view">
+        <field name="name">it.asset.dashboard</field>
+        <field name="model">it.asset.dashboard</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>Tableau de bord</h1>
+                    </div>
+                    <script type="text/javascript" src="/it_asset_management/static/src/js/dashboard.js"/>
+                    <link rel="stylesheet" href="/it_asset_management/static/src/css/dashboard.css"/>
+                    <div class="o_dashboard" t-att-dashboard_data="dashboard_data">
+                        <!-- Main KPIs -->
+                        <div class="o_dashboard_kpi_container">
+                            <!-- Equipment Count KPI -->
+                            <div class="o_dashboard_kpi">
+                                <div class="o_dashboard_kpi_title">Équipements</div>
+                                <div class="o_dashboard_kpi_value"><t t-esc="dashboard_data.counts.equipment"/></div>
+                                <div class="o_dashboard_kpi_change">
+                                    <t t-if="dashboard_data.changes.equipment_change > 0">
+                                        <span class="text-success">
+                                            <i class="fa fa-arrow-up"/> <t t-esc="dashboard_data.changes.equipment_change"/>% depuis la période
+                                        </span>
+                                    </t>
+                                    <t t-else="">
+                                        <span class="text-danger">
+                                            <i class="fa fa-arrow-down"/> <t t-esc="dashboard_data.changes.equipment_change"/>% depuis la période
+                                        </span>
+                                    </t>
+                                </div>
+                            </div>
+                            
+                            <!-- Contracts Count KPI -->
+                            <div class="o_dashboard_kpi">
+                                <div class="o_dashboard_kpi_title">Contrats</div>
+                                <div class="o_dashboard_kpi_value"><t t-esc="dashboard_data.counts.contracts"/></div>
+                                <div class="o_dashboard_kpi_change">
+                                    <t t-if="dashboard_data.changes.contract_change > 0">
+                                        <span class="text-success">
+                                            <i class="fa fa-arrow-up"/> <t t-esc="dashboard_data.changes.contract_change"/>% depuis la période
+                                        </span>
+                                    </t>
+                                    <t t-else="">
+                                        <span class="text-danger">
+                                            <i class="fa fa-arrow-down"/> <t t-esc="dashboard_data.changes.contract_change"/>% depuis la période
+                                        </span>
+                                    </t>
+                                </div>
+                            </div>
+                            
+                            <!-- Revenue KPI -->
+                            <div class="o_dashboard_kpi">
+                                <div class="o_dashboard_kpi_title">Revenu</div>
+                                <div class="o_dashboard_kpi_value">
+                                    <t t-esc="'$' + (dashboard_data.counts.revenue).toLocaleString()"/>
+                                </div>
+                                <div class="o_dashboard_kpi_change">
+                                    <t t-if="dashboard_data.changes.revenue_change > 0">
+                                        <span class="text-success">
+                                            <i class="fa fa-arrow-up"/> <t t-esc="dashboard_data.changes.revenue_change"/>% depuis la période
+                                        </span>
+                                    </t>
+                                    <t t-else="">
+                                        <span class="text-danger">
+                                            <i class="fa fa-arrow-down"/> <t t-esc="dashboard_data.changes.revenue_change"/>% depuis la période
+                                        </span>
+                                    </t>
+                                </div>
+                            </div>
+                            
+                            <!-- Average Contract Value KPI -->
+                            <div class="o_dashboard_kpi">
+                                <div class="o_dashboard_kpi_title">Contrat moyen</div>
+                                <div class="o_dashboard_kpi_value">
+                                    <t t-esc="'$' + (dashboard_data.counts.avg_contract).toLocaleString()"/>
+                                </div>
+                                <div class="o_dashboard_kpi_change">
+                                    <t t-if="dashboard_data.changes.avg_contract_change > 0">
+                                        <span class="text-success">
+                                            <i class="fa fa-arrow-up"/> <t t-esc="dashboard_data.changes.avg_contract_change"/>% depuis la période
+                                        </span>
+                                    </t>
+                                    <t t-else="">
+                                        <span class="text-danger">
+                                            <i class="fa fa-arrow-down"/> <t t-esc="dashboard_data.changes.avg_contract_change"/>% depuis la période
+                                        </span>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Monthly Chart -->
+                        <div class="o_dashboard_chart_container mt32">
+                            <h3>Revenus mensuels</h3>
+                            <div class="o_dashboard_chart" id="revenue_chart"/>
+                        </div>
+                        
+                        <!-- Top Lists -->
+                        <div class="row mt32">
+                            <!-- Top equipment by client -->
+                            <div class="col-md-6">
+                                <h3>Meilleurs équipements</h3>
+                                <table class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Client</th>
+                                            <th>Équipements</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="dashboard_data.top_clients_equipment" t-as="client">
+                                            <tr>
+                                                <td><t t-esc="client.name"/></td>
+                                                <td><t t-esc="client.equipment_count"/></td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <!-- Top contracts by client -->
+                            <div class="col-md-6">
+                                <h3>Meilleurs contrats clients</h3>
+                                <table class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Client</th>
+                                            <th>Revenu</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="dashboard_data.top_clients_contract" t-as="client">
+                                            <tr>
+                                                <td><t t-esc="client.name"/></td>
+                                                <td><t t-esc="'$' + (client.contract_total).toLocaleString()"/></td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    
+    <!-- Dashboard Action -->
+    <record id="action_it_asset_dashboard" model="ir.actions.act_window">
+        <field name="name">Tableau de bord</field>
+        <field name="res_model">it.asset.dashboard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_it_asset_dashboard"/>
+        <field name="target">main</field>
+    </record>
+    
+    <!-- Dashboard Menu -->
+    <menuitem id="menu_it_asset_dashboard"
+              name="Tableau de bord"
+              parent="menu_it_asset_root"
+              action="action_it_asset_dashboard"
+              sequence="1"/>
+</odoo> 

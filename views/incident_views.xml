@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vue Liste -->
+    <record id="view_it_incident_list" model="ir.ui.view">
+        <field name="name">it.incident.list</field>
+        <field name="model">it.incident</field>
+        <field name="arch" type="xml">
+            <list string="Incidents">
+                <field name="name"/>
+                <field name="client_id"/>
+                <field name="equipment_id"/>
+                <field name="priority"/>
+                <field name="date_reported"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Vue Kanban -->
+    <record id="view_it_incident_kanban" model="ir.ui.view">
+        <field name="name">it.incident.kanban</field>
+        <field name="model">it.incident</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="name"/>
+                <field name="client_id"/>
+                <field name="equipment_id"/>
+                <field name="state"/>
+                <field name="priority"/>
+                <field name="date_reported"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="oe_kanban_content">
+                                <strong><field name="name"/></strong>
+                                <div>
+                                    <span class="badge badge-pill" t-att-class="{
+                                        'badge-success': record.state.raw_value == 'resolved',
+                                        'badge-primary': record.state.raw_value == 'closed',
+                                        'badge-warning': record.state.raw_value == 'in_progress',
+                                        'badge-danger': record.state.raw_value == 'new'
+                                    }">
+                                        <field name="state"/>
+                                    </span>
+                                </div>
+                                <div><field name="client_id"/></div>
+                                <div><field name="equipment_id"/></div>
+                                <div><field name="priority"/></div>
+                                <div><field name="date_reported" widget="date"/></div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Vue Formulaire -->
+    <record id="view_it_incident_form" model="ir.ui.view">
+        <field name="name">it.incident.form</field>
+        <field name="model">it.incident</field>
+        <field name="arch" type="xml">
+            <form string="Incident">
+                <header>
+                    <button name="action_in_progress" type="object" string="En cours" invisible="state != 'new'"/>
+                    <button name="action_resolve" type="object" string="Résoudre" invisible="state != 'in_progress'"/>
+                    <button name="action_close" type="object" string="Clôturer" invisible="state != 'resolved'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="new,in_progress,resolved,closed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="client_id" required="1"/>
+                            <field name="equipment_id"/>
+                            <field name="contract_id"/>
+                            <field name="priority"/>
+                        </group>
+                        <group>
+                            <field name="assigned_to"/>
+                            <field name="date_reported" readonly="1"/>
+                            <field name="date_resolved" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description">
+                            <field name="description"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vue Recherche -->
+    <record id="view_it_incident_search" model="ir.ui.view">
+        <field name="name">it.incident.search</field>
+        <field name="model">it.incident</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher un incident">
+                <field name="name"/>
+                <field name="client_id"/>
+                <field name="equipment_id"/>
+                <separator/>
+                <filter name="new" string="Nouveau" domain="[('state', '=', 'new')]"/>
+                <filter name="in_progress" string="En cours" domain="[('state', '=', 'in_progress')]"/>
+                <filter name="resolved" string="Résolu" domain="[('state', '=', 'resolved')]"/>
+                <filter name="closed" string="Fermé" domain="[('state', '=', 'closed')]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_by_client" string="Client" context="{'group_by': 'client_id'}"/>
+                    <filter name="group_by_state" string="État" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_it_incident" model="ir.actions.act_window">
+        <field name="name">Incidents</field>
+        <field name="res_model">it.incident</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="view_it_incident_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créez votre premier incident
+            </p>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Template de bienvenue personnalisé pour les nouveaux clients -->
+    <template id="client_welcome_page" name="Bienvenue Client">
+        <t t-call="portal.portal_layout">
+            <div class="container">
+                <!-- Message de bienvenue -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="card shadow-sm">
+                            <div class="card-body text-center">
+                                <h1 class="display-4 text-primary">Bienvenue <t t-esc="client.name"/></h1>
+                                <p class="lead">Merci d'avoir rejoint notre plateforme IT Asset Management.</p>
+                                <p>
+                                    Votre compte a été créé avec succès. Vous pouvez maintenant accéder à toutes les fonctionnalités 
+                                    de notre plateforme pour gérer vos équipements, contrats, abonnements et incidents.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Cartes d'accès rapide -->
+                <div class="row mt-4">
+                    <!-- Équipements -->
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body text-center">
+                                <i class="fa fa-laptop fa-3x text-primary mb-3"></i>
+                                <h3>Équipements</h3>
+                                <p>
+                                    Consultez vos <b t-esc="equipment_count"/> équipements et 
+                                    vérifiez l'état de leur garantie.
+                                </p>
+                                <a href="/my/equipements" class="btn btn-primary btn-block">
+                                    Voir mes équipements
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Contrats -->
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body text-center">
+                                <i class="fa fa-file-contract fa-3x text-success mb-3"></i>
+                                <h3>Contrats</h3>
+                                <p>
+                                    Gérez vos <b t-esc="contract_count"/> contrats 
+                                    et consultez leurs détails.
+                                </p>
+                                <a href="/my/contrats" class="btn btn-success btn-block">
+                                    Voir mes contrats
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Abonnements -->
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body text-center">
+                                <i class="fa fa-sync fa-3x text-info mb-3"></i>
+                                <h3>Abonnements</h3>
+                                <p>
+                                    Suivez vos <b t-esc="subscription_count"/> abonnements 
+                                    et services récurrents.
+                                </p>
+                                <a href="/my/abonnements" class="btn btn-info btn-block">
+                                    Voir mes abonnements
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-3">
+                    <!-- Incidents & Tickets -->
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body text-center">
+                                <i class="fa fa-ticket-alt fa-3x text-warning mb-3"></i>
+                                <h3>Incidents &amp; Tickets</h3>
+                                <p>
+                                    Consultez et créez des tickets pour vos <b t-esc="incident_count"/> incidents.
+                                </p>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <a href="/my/incidents" class="btn btn-warning btn-block">
+                                            Voir mes tickets
+                                        </a>
+                                    </div>
+                                    <div class="col-6">
+                                        <a href="/my/incident/create" class="btn btn-outline-warning btn-block">
+                                            Nouveau ticket
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Factures -->
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body text-center">
+                                <i class="fa fa-file-invoice-dollar fa-3x text-danger mb-3"></i>
+                                <h3>Factures</h3>
+                                <p>
+                                    Accédez à vos <b t-esc="invoice_count"/> factures et 
+                                    suivez leur statut de paiement.
+                                </p>
+                                <a href="/my/factures" class="btn btn-danger btn-block">
+                                    Voir mes factures
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Profil et assistance -->
+                <div class="row mt-3 mb-5">
+                    <div class="col-12">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-md-8">
+                                        <h4>Besoin d'aide?</h4>
+                                        <p>Notre équipe de support est disponible pour vous aider avec toutes vos questions.</p>
+                                    </div>
+                                    <div class="col-md-4 text-md-right">
+                                        <a href="/my/incident/create" class="btn btn-outline-primary">
+                                            Contacter le support
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

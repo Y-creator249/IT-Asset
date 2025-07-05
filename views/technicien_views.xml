@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Ce fichier est un lien pour compatibilité avec les anciennes références -->
+    <!-- Les vues pour it.technician2 sont maintenant dans technician_views.xml -->
+</odoo> 

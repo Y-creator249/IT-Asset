@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_home_it_asset" name="IT Assets" inherit_id="portal.portal_my_home" priority="30">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-if="it_asset_count" t-call="portal.portal_docs_entry">
+                <t t-set="title">IT Assets</t>
+                <t t-set="url" t-value="'/my/it-assets'"/>
+                <t t-set="count" t-value="it_asset_count"/>
+            </t>
+        </xpath>
+    </template>
+
+    <template id="portal_my_it_assets" name="My IT Assets">
+        <t t-call="portal.portal_layout">
+            <div class="row mt16 o_portal_it_assets">
+                <t t-foreach="assets" t-as="asset">
+                    <div class="col-12 col-md-6 col-lg-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <t t-esc="asset.name"/>
+                                </h5>
+                                <div class="card-text">
+                                    <div><strong>Type:</strong> <t t-esc="asset.type_id.name"/></div>
+                                    <div><strong>Serial:</strong> <t t-esc="asset.serial_number"/></div>
+                                    <div><strong>Status:</strong> <t t-esc="asset.state"/></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </div>
+        </t>
+    </template>
+</odoo>

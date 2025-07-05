@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Séquence pour les factures -->
+        <record id="sequence_sales_journal" model="ir.sequence">
+            <field name="name">Factures Client</field>
+            <field name="implementation">standard</field>
+            <field name="code">account.sales.journal</field>
+            <field name="prefix">FACT/%(year)s/</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="1"/>
+        </record>
+
+        <!-- Journal de vente par défaut -->
+        <record id="it_asset_sales_journal" model="account.journal">
+            <field name="name">Ventes IT Asset</field>
+            <field name="type">sale</field>
+            <field name="code">ITSL</field>
+            <field name="sequence_id" ref="sequence_sales_journal"/>
+            <field name="company_id" eval="1"/>
+            <field name="active" eval="True"/>
+            <field name="invoice_reference_type">invoice</field>
+            <field name="refund_sequence">True</field>
+            <field name="show_on_dashboard">True</field>
+        </record>
+
+        <!-- Compte de revenus par défaut -->
+        <record id="it_sales_income_account" model="account.account">
+            <field name="name">Ventes Services IT</field>
+            <field name="code">706000</field>
+            <field name="user_type_id" ref="account.data_account_type_revenue"/>
+            <field name="company_id" eval="1"/>
+        </record>
+    </data>
+</odoo> 

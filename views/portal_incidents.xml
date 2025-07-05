@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- LISTE DES INCIDENTS -->
+    <template id="portal_incidents" name="Mes Incidents">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Mes Tickets d'Incidents</t>
+            </t>
+            
+            <div class="d-flex justify-content-between mb-3">
+                <span></span>
+                <a href="/my/incident/create" class="btn btn-primary">
+                    <i class="fa fa-plus mr-1"/>
+                    Créer un nouveau ticket
+                </a>
+            </div>
+
+            <t t-if="not incidents">
+                <div class="alert alert-info">
+                    <p class="mb-0">Vous n'avez aucun ticket d'incident à afficher.</p>
+                </div>
+            </t>
+
+            <t t-if="incidents">
+                <t t-call="portal.portal_table">
+                    <thead>
+                        <tr class="active">
+                            <th>Référence</th>
+                            <th>Description</th>
+                            <th>Équipement</th>
+                            <th class="text-center">Priorité</th>
+                            <th class="text-center">État</th>
+                            <th t-attf-class="text-right{{ ' d-none d-md-table-cell' if pager.get('page_count', 0) > 1 else '' }}">Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="incidents" t-as="incident">
+                            <tr>
+                                <td>
+                                    <a t-attf-href="/my/incident/#{incident.id}">
+                                        <t t-esc="incident.name"/>
+                                    </a>
+                                </td>
+                                <td>
+                                    <span t-esc="incident.description[:50] + '...' if len(incident.description) > 50 else incident.description"/>
+                                </td>
+                                <td>
+                                    <t t-if="incident.equipment_id">
+                                        <a t-attf-href="/my/equipement/#{incident.equipment_id.id}">
+                                            <span t-field="incident.equipment_id.name"/>
+                                        </a>
+                                    </t>
+                                    <t t-else="">
+                                        <span>-</span>
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="incident.priority == 'low'">
+                                        <span class="badge badge-pill badge-info">Basse</span>
+                                    </t>
+                                    <t t-elif="incident.priority == 'medium'">
+                                        <span class="badge badge-pill badge-warning">Moyenne</span>
+                                    </t>
+                                    <t t-else="">
+                                        <span class="badge badge-pill badge-danger">Haute</span>
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="incident.state == 'new'">
+                                        <span class="badge badge-pill badge-primary">Nouveau</span>
+                                    </t>
+                                    <t t-elif="incident.state == 'in_progress'">
+                                        <span class="badge badge-pill badge-warning">En cours</span>
+                                    </t>
+                                    <t t-elif="incident.state == 'resolved'">
+                                        <span class="badge badge-pill badge-success">Résolu</span>
+                                    </t>
+                                    <t t-else="">
+                                        <span class="badge badge-pill badge-secondary">Fermé</span>
+                                    </t>
+                                </td>
+                                <td t-attf-class="text-right{{ ' d-none d-md-table-cell' if pager.get('page_count', 0) > 1 else '' }}">
+                                    <span t-field="incident.date_reported"/>
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </t>
+            </t>
+
+            <div class="o_portal_pager" t-if="pager.get('page_count', 0) > 1">
+                <t t-call="portal.pager"/>
+            </div>
+        </t>
+    </template>
+
+    <!-- DÉTAIL D'UN INCIDENT -->
+    <template id="portal_incident_detail" name="Détail Incident">
+        <t t-call="portal.portal_layout">
+            <t t-set="o_portal_fullwidth_alert" groups="portal.group_portal">
+                <t t-call="portal.portal_back_button">
+                    <t t-set="backend_url" t-value="'/my/incidents'"/>
+                </t>
+            </t>
+
+            <div class="container">
+                <div class="row mt-4">
+                    <div class="col-lg-12">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-white">
+                                <div class="row">
+                                    <div class="col-12 col-md-8">
+                                        <h2 class="mb-0">
+                                            Ticket d'incident <span t-field="incident.name"/>
+                                        </h2>
+                                    </div>
+                                    <div class="col-12 col-md-4 text-md-right">
+                                        <t t-if="incident.state == 'new'">
+                                            <span class="badge badge-pill badge-primary py-2 px-3">Nouveau</span>
+                                        </t>
+                                        <t t-elif="incident.state == 'in_progress'">
+                                            <span class="badge badge-pill badge-warning py-2 px-3">En cours</span>
+                                        </t>
+                                        <t t-elif="incident.state == 'resolved'">
+                                            <span class="badge badge-pill badge-success py-2 px-3">Résolu</span>
+                                        </t>
+                                        <t t-else="">
+                                            <span class="badge badge-pill badge-secondary py-2 px-3">Fermé</span>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-12 col-lg-6">
+                                        <h5 class="mb-3">Informations générales</h5>
+                                        <div class="row mb-2">
+                                            <div class="col-sm-5 font-weight-bold">Date de signalement:</div>
+                                            <div class="col-sm-7"><span t-field="incident.date_reported"/></div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-sm-5 font-weight-bold">Priorité:</div>
+                                            <div class="col-sm-7">
+                                                <t t-if="incident.priority == 'low'">
+                                                    <span class="badge badge-pill badge-info">Basse</span>
+                                                </t>
+                                                <t t-elif="incident.priority == 'medium'">
+                                                    <span class="badge badge-pill badge-warning">Moyenne</span>
+                                                </t>
+                                                <t t-else="">
+                                                    <span class="badge badge-pill badge-danger">Haute</span>
+                                                </t>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-sm-5 font-weight-bold">Équipement concerné:</div>
+                                            <div class="col-sm-7">
+                                                <t t-if="incident.equipment_id">
+                                                    <a t-attf-href="/my/equipement/#{incident.equipment_id.id}">
+                                                        <span t-field="incident.equipment_id.name"/>
+                                                    </a>
+                                                </t>
+                                                <t t-else="">
+                                                    <span>Non spécifié</span>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-lg-6 mt-4 mt-lg-0">
+                                        <h5 class="mb-3">Suivi</h5>
+                                        <div class="row mb-2">
+                                            <div class="col-sm-5 font-weight-bold">Assigné à:</div>
+                                            <div class="col-sm-7">
+                                                <t t-if="incident.assigned_to">
+                                                    <span t-field="incident.assigned_to.name"/>
+                                                </t>
+                                                <t t-else="">
+                                                    <span>Non assigné</span>
+                                                </t>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-sm-5 font-weight-bold">Date de résolution:</div>
+                                            <div class="col-sm-7">
+                                                <t t-if="incident.date_resolved">
+                                                    <span t-field="incident.date_resolved"/>
+                                                </t>
+                                                <t t-else="">
+                                                    <span>En attente</span>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mt-4">
+                                    <div class="col-12">
+                                        <h5 class="mb-3">Description</h5>
+                                        <div class="p-3 bg-light rounded">
+                                            <p class="mb-0"><t t-esc="incident.description"/></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- FORMULAIRE DE CRÉATION D'INCIDENT -->
+    <template id="portal_create_incident" name="Créer un Incident">
+        <t t-call="portal.portal_layout">
+            <t t-set="o_portal_fullwidth_alert" groups="portal.group_portal">
+                <t t-call="portal.portal_back_button">
+                    <t t-set="backend_url" t-value="'/my/incidents'"/>
+                </t>
+            </t>
+
+            <div class="container">
+                <div class="row mt-4">
+                    <div class="col-lg-12">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-white">
+                                <h2 class="mb-0">Signaler un incident</h2>
+                            </div>
+                            <div class="card-body">
+                                <form action="/my/incident/submit" method="post" class="js_website_submit_form">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    
+                                    <div class="form-group">
+                                        <label for="equipment_id">Équipement concerné</label>
+                                        <select name="equipment_id" id="equipment_id" class="form-control">
+                                            <option value="">-- Sélectionner un équipement --</option>
+                                            <t t-foreach="equipment_ids" t-as="equipment">
+                                                <option t-att-value="equipment.id">
+                                                    <t t-esc="equipment.name"/> (<t t-esc="equipment.serial_number"/>)
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="priority">Priorité*</label>
+                                        <select name="priority" id="priority" class="form-control" required="required">
+                                            <option value="low">Basse</option>
+                                            <option value="medium" selected="selected">Moyenne</option>
+                                            <option value="high">Haute</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="description">Description du problème*</label>
+                                        <textarea name="description" id="description" class="form-control" rows="6" required="required"
+                                                  placeholder="Décrivez le problème rencontré en détaillant au maximum les symptômes, les messages d'erreur et les actions déjà tentées..."></textarea>
+                                    </div>
+                                    
+                                    <div class="form-group text-right">
+                                        <a href="/my/incidents" class="btn btn-secondary">Annuler</a>
+                                        <button type="submit" class="btn btn-primary">Soumettre</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

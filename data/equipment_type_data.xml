@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Types d'équipements par défaut -->
+        <record id="equipment_type_desktop" model="it.equipment.type">
+            <field name="name">Ordinateur de bureau</field>
+            <field name="code">DESKTOP</field>
+            <field name="icon">desktop</field>
+            <field name="default_warranty_duration">36</field>
+            <field name="default_lifecycle_duration">48</field>
+            <field name="description">Ordinateurs de bureau et stations de travail</field>
+        </record>
+        
+        <record id="equipment_type_laptop" model="it.equipment.type">
+            <field name="name">Ordinateur portable</field>
+            <field name="code">LAPTOP</field>
+            <field name="icon">laptop</field>
+            <field name="default_warranty_duration">24</field>
+            <field name="default_lifecycle_duration">36</field>
+            <field name="description">Ordinateurs portables et ultrabooks</field>
+        </record>
+        
+        <record id="equipment_type_server" model="it.equipment.type">
+            <field name="name">Serveur</field>
+            <field name="code">SERVER</field>
+            <field name="icon">server</field>
+            <field name="default_warranty_duration">36</field>
+            <field name="default_lifecycle_duration">60</field>
+            <field name="description">Serveurs physiques</field>
+        </record>
+        
+        <record id="equipment_type_network" model="it.equipment.type">
+            <field name="name">Équipement réseau</field>
+            <field name="code">NETWORK</field>
+            <field name="icon">network-wired</field>
+            <field name="default_warranty_duration">36</field>
+            <field name="default_lifecycle_duration">60</field>
+            <field name="description">Routeurs, commutateurs, points d'accès</field>
+        </record>
+        
+        <record id="equipment_type_printer" model="it.equipment.type">
+            <field name="name">Imprimante</field>
+            <field name="code">PRINTER</field>
+            <field name="icon">print</field>
+            <field name="default_warranty_duration">24</field>
+            <field name="default_lifecycle_duration">48</field>
+            <field name="description">Imprimantes et scanners</field>
+        </record>
+        
+        <record id="equipment_type_mobile" model="it.equipment.type">
+            <field name="name">Appareil mobile</field>
+            <field name="code">MOBILE</field>
+            <field name="icon">mobile-alt</field>
+            <field name="default_warranty_duration">12</field>
+            <field name="default_lifecycle_duration">24</field>
+            <field name="description">Smartphones et tablettes</field>
+        </record>
+        
+        <record id="equipment_type_software" model="it.equipment.type">
+            <field name="name">Logiciel</field>
+            <field name="code">SOFTWARE</field>
+            <field name="icon">code</field>
+            <field name="default_warranty_duration">0</field>
+            <field name="default_lifecycle_duration">0</field>
+            <field name="description">Applications et logiciels</field>
+        </record>
+        
+        <record id="equipment_type_peripheral" model="it.equipment.type">
+            <field name="name">Périphérique</field>
+            <field name="code">PERIPHERAL</field>
+            <field name="icon">hdd</field>
+            <field name="default_warranty_duration">12</field>
+            <field name="default_lifecycle_duration">36</field>
+            <field name="description">Claviers, souris, moniteurs, disques externes</field>
+        </record>
+    </data>
+</odoo> 

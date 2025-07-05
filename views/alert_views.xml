@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vue Form -->
+    <record id="view_it_alert_form" model="ir.ui.view">
+        <field name="name">it.alert.form</field>
+        <field name="model">it.alert</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar"/>
+                    <button name="action_send_alert" 
+                            string="Envoyer Alerte" 
+                            type="object" 
+                            invisible="state != 'new'"
+                            class="oe_highlight"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Titre de l'alerte"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="alert_date"/>
+                            <field name="alert_type"/>
+                            <field name="client_id"/>
+                        </group>
+                        <group>
+                            <field name="equipment_id" invisible="alert_type != 'warranty'"/>
+                            <field name="license_id" invisible="alert_type != 'license'"/>
+                            <field name="contract_id" invisible="alert_type != 'contract'"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description" name="description">
+                            <field name="description"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vue List -->
+    <record id="view_it_alert_list" model="ir.ui.view">
+        <field name="name">it.alert.list</field>
+        <field name="model">it.alert</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="alert_date"/>
+                <field name="alert_type"/>
+                <field name="client_id"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Vue Kanban -->
+    <record id="view_it_alert_kanban" model="ir.ui.view">
+        <field name="name">it.alert.kanban</field>
+        <field name="model">it.alert</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="name"/>
+                <field name="alert_date"/>
+                <field name="alert_type"/>
+                <field name="client_id"/>
+                <field name="state"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="oe_kanban_content">
+                                <strong><field name="name"/></strong>
+                                <div>
+                                    <span class="badge badge-pill" t-att-class="{
+                                        'badge-success': record.state.raw_value == 'sent',
+                                        'badge-warning': record.state.raw_value == 'new'
+                                    }">
+                                        <field name="state"/>
+                                    </span>
+                                </div>
+                                <div><field name="client_id"/></div>
+                                <div><field name="alert_type"/></div>
+                                <div><field name="alert_date" widget="date"/></div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Vue Search -->
+    <record id="view_it_alert_search" model="ir.ui.view">
+        <field name="name">it.alert.search</field>
+        <field name="model">it.alert</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="client_id"/>
+                <separator/>
+                <filter string="Nouvelles" name="new" domain="[('state', '=', 'new')]"/>
+                <filter string="Envoyées" name="sent" domain="[('state', '=', 'sent')]"/>
+                <group expand="0" string="Grouper Par">
+                    <filter string="Type" name="group_by_type" context="{'group_by': 'alert_type'}"/>
+                    <filter string="État" name="group_by_state" context="{'group_by': 'state'}"/>
+                    <filter string="Client" name="group_by_client" context="{'group_by': 'client_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action Window -->
+    <record id="action_it_alert" model="ir.actions.act_window">
+        <field name="name">Alertes</field>
+        <field name="res_model">it.alert</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="context">{'search_default_new': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créer votre première alerte
+            </p>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vue Liste -->
+    <record id="view_it_client_list" model="ir.ui.view">
+        <field name="name">it.client.list</field>
+        <field name="model">it.client</field>
+        <field name="arch" type="xml">
+            <list string="Clients">
+                <field name="name"/>
+                <field name="reference"/>
+                <field name="client_type"/>
+                <field name="industry"/>
+                <field name="phone"/>
+                <field name="email"/>
+                <field name="status"/>
+                <field name="contract_count"/>
+                <field name="equipment_count"/>
+                <field name="active" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Vue Kanban -->
+    <record id="view_it_client_kanban" model="ir.ui.view">
+        <field name="name">it.client.kanban</field>
+        <field name="model">it.client</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="name"/>
+                <field name="reference"/>
+                <field name="client_type"/>
+                <field name="industry"/>
+                <field name="status"/>
+                <field name="active"/>
+                <field name="contract_count"/>
+                <field name="equipment_count"/>
+                <field name="ticket_count"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="oe_kanban_content">
+                                <div class="o_kanban_record_title mb8">
+                                    <strong><field name="name"/></strong>
+                                    <small class="text-muted"> (<field name="reference"/>)</small>
+                                </div>
+                                <div class="o_kanban_record_subtitle mb8">
+                                    <span t-if="record.status.raw_value == 'active'" class="badge badge-success">
+                                        Actif
+                                    </span>
+                                    <span t-elif="record.status.raw_value == 'draft'" class="badge badge-warning">
+                                        Brouillon
+                                    </span>
+                                    <span t-elif="record.status.raw_value == 'inactive'" class="badge badge-secondary">
+                                        Inactif
+                                    </span>
+                                    <span t-elif="record.status.raw_value == 'suspended'" class="badge badge-danger">
+                                        Suspendu
+                                    </span>
+                                </div>
+                                <div>
+                                    <span class="mr-2" t-if="record.client_type.raw_value"><field name="client_type"/></span>
+                                    <span t-if="record.industry.raw_value"><field name="industry"/></span>
+                                </div>
+                                <div class="o_kanban_record_bottom mt8">
+                                    <div class="oe_kanban_bottom_left">
+                                        <span class="badge badge-info mr-2" t-if="record.contract_count.raw_value > 0">
+                                            <i class="fa fa-file-contract"/> <t t-esc="record.contract_count.raw_value"/>
+                                        </span>
+                                        <span class="badge badge-primary mr-2" t-if="record.equipment_count.raw_value > 0">
+                                            <i class="fa fa-laptop"/> <t t-esc="record.equipment_count.raw_value"/>
+                                        </span>
+                                        <span class="badge badge-warning" t-if="record.ticket_count.raw_value > 0">
+                                            <i class="fa fa-ticket-alt"/> <t t-esc="record.ticket_count.raw_value"/>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Vue Formulaire -->
+    <record id="view_it_client_form" model="ir.ui.view">
+        <field name="name">it.client.form</field>
+        <field name="model">it.client</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_button"/>
+                        </button>
+                        <button name="action_view_contracts" type="object" class="oe_stat_button" icon="fa-file-contract" invisible="contract_count == 0">
+                            <field name="contract_count" widget="statinfo" string="Contrats"/>
+                        </button>
+                        <button name="action_view_equipment" type="object" class="oe_stat_button" icon="fa-laptop" invisible="equipment_count == 0">
+                            <field name="equipment_count" widget="statinfo" string="Équipements"/>
+                        </button>
+                        <button name="action_view_tickets" type="object" class="oe_stat_button" icon="fa-ticket-alt" invisible="ticket_count == 0">
+                            <field name="ticket_count" widget="statinfo" string="Tickets"/>
+                        </button>
+                        <button name="action_view_subscriptions" type="object" class="oe_stat_button" icon="fa-sync" invisible="subscription_count == 0">
+                            <field name="subscription_count" widget="statinfo" string="Abonnements"/>
+                        </button>
+                        <button name="action_view_invoices" type="object" class="oe_stat_button" icon="fa-file-invoice-dollar" invisible="invoice_count == 0">
+                            <field name="invoice_count" widget="statinfo" string="Factures"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Nom du client" required="1"/>
+                        </h1>
+                        <h2>
+                            <field name="reference" readonly="1"/>
+                        </h2>
+                    </div>
+                    <notebook>
+                        <page string="Informations" name="info">
+                            <group>
+                                <group string="Coordonnées">
+                                    <field name="partner_id"/>
+                                    <field name="email" widget="email"/>
+                                    <field name="phone" widget="phone"/>
+                                </group>
+                                <group string="Classification">
+                                    <field name="client_type"/>
+                                    <field name="industry"/>
+                                    <field name="size"/>
+                                    <field name="status"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Services" name="services">
+                            <group>
+                                <group string="Gestion de compte">
+                                    <field name="service_level_id"/>
+                                    <field name="account_manager_id"/>
+                                    <field name="technical_contact_id"/>
+                                </group>
+                                <group string="Dates importantes">
+                                    <field name="onboarding_date"/>
+                                    <field name="last_review_date"/>
+                                    <field name="next_review_date"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="notes" placeholder="Notes et commentaires sur ce client..."/>
+                        </page>
+                    </notebook>
+                    <chatter/>
+                </sheet>
+                <footer>
+                    <button name="action_delete_client" string="Supprimer" type="object" class="btn btn-danger" confirm="Êtes-vous sûr de vouloir supprimer ce client ? Cette action est irréversible."/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vue Recherche -->
+    <record id="view_it_client_search" model="ir.ui.view">
+        <field name="name">it.client.search</field>
+        <field name="model">it.client</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="reference"/>
+                <field name="partner_id"/>
+                <field name="email"/>
+                <field name="phone"/>
+                <separator/>
+                <filter string="Clients actifs" name="active_status" domain="[('status', '=', 'active')]"/>
+                <filter string="Clients brouillon" name="draft_status" domain="[('status', '=', 'draft')]"/>
+                <filter string="Clients inactifs" name="inactive_status" domain="[('status', '=', 'inactive')]"/>
+                <filter string="Clients suspendus" name="suspended_status" domain="[('status', '=', 'suspended')]"/>
+                <separator/>
+                <filter string="Entreprises" name="enterprise_type" domain="[('client_type', '=', 'enterprise')]"/>
+                <filter string="Gouvernement" name="gov_type" domain="[('client_type', '=', 'government')]"/>
+                <filter string="Éducation" name="edu_type" domain="[('client_type', '=', 'education')]"/>
+                <separator/>
+                <filter string="Archivé" name="inactive" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter string="Type de client" name="groupby_type" context="{'group_by': 'client_type'}"/>
+                    <filter string="Secteur d'activité" name="groupby_industry" context="{'group_by': 'industry'}"/>
+                    <filter string="Taille" name="groupby_size" context="{'group_by': 'size'}"/>
+                    <filter string="Statut" name="groupby_status" context="{'group_by': 'status'}"/>
+                    <filter string="Gestionnaire de compte" name="groupby_account_manager" context="{'group_by': 'account_manager_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_it_client" model="ir.actions.act_window">
+        <field name="name">Clients</field>
+        <field name="res_model">it.client</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="view_it_client_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créez votre premier client
+            </p>
+            <p>
+                Créez un nouveau client pour commencer à gérer votre parc informatique.
+            </p>
+        </field>
+    </record>
+</odoo>

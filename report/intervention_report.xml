@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_intervention_document">
+        <t t-call="web.external_layout">
+            <div class="page">
+                <h2>Rapport d'Intervention</h2>
+                <div class="row mt32 mb32">
+                    <div class="col-6">
+                        <strong>Référence:</strong>
+                        <span t-field="doc.name"/>
+                        <br/>
+                        <strong>Client:</strong>
+                        <span t-field="doc.client_id.name"/>
+                        <br/>
+                        <strong>Équipement:</strong>
+                        <span t-field="doc.equipment_id.name"/>
+                    </div>
+                    <div class="col-6">
+                        <strong>Date:</strong>
+                        <span t-field="doc.date"/>
+                        <br/>
+                        <strong>Technicien:</strong>
+                        <span t-field="doc.technician_id.name"/>
+                        <br/>
+                        <strong>État:</strong>
+                        <span t-field="doc.state"/>
+                    </div>
+                </div>
+
+                <h3>Description de l'intervention</h3>
+                <div class="row mt32 mb32">
+                    <div class="col-12">
+                        <span t-field="doc.description"/>
+                    </div>
+                </div>
+
+                <h3>Solution apportée</h3>
+                <div class="row mt32 mb32">
+                    <div class="col-12">
+                        <span t-field="doc.solution"/>
+                    </div>
+                </div>
+
+                <div class="row mt32 mb32">
+                    <div class="col-6">
+                        <strong>Durée:</strong>
+                        <span t-field="doc.duration"/> heures
+                    </div>
+                    <div class="col-6">
+                        <strong>Type d'intervention:</strong>
+                        <span t-field="doc.intervention_type"/>
+                    </div>
+                </div>
+
+                <t t-if="doc.spare_part_ids">
+                    <h3>Pièces utilisées</h3>
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Produit</th>
+                                <th>Quantité</th>
+                                <th>Prix unitaire</th>
+                                <th>Sous-total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="doc.spare_part_ids" t-as="part">
+                                <td><span t-field="part.product_id.name"/></td>
+                                <td><span t-field="part.quantity"/></td>
+                                <td><span t-field="part.unit_price"/></td>
+                                <td><span t-field="part.subtotal"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </t>
+
+                <div class="row mt32">
+                    <div class="col-12">
+                        <h4>Signature du client:</h4>
+                        <div style="border: 1px solid black; height: 100px;">
+                            <span t-if="doc.signature" t-field="doc.signature" t-field-options='{"widget": "image"}'/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="report_intervention">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="it_asset_management.report_intervention_document"/>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_report_intervention" model="ir.actions.report">
+        <field name="name">Rapport d'intervention</field>
+        <field name="model">it.intervention</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">it_asset_management.report_intervention</field>
+        <field name="report_file">it_asset_management.report_intervention</field>
+        <field name="binding_model_id" ref="model_it_intervention"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>

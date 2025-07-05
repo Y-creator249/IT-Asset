@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Définition des groupes de sécurité -->
+        <record id="group_it_asset_user" model="res.groups">
+            <field name="name">IT Asset User</field>
+            <field name="category_id" ref="base.module_category_services"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="group_it_asset_manager" model="res.groups">
+            <field name="name">IT Asset Manager</field>
+            <field name="category_id" ref="base.module_category_services"/>
+            <field name="implied_ids" eval="[(4, ref('group_it_asset_user'))]"/>
+            <field name="users" eval="[(4, ref('base.user_admin'))]"/>
+        </record>
+
+        <!-- Règles de sécurité pour les utilisateurs -->
+        <record id="rule_it_client_users" model="ir.rule">
+            <field name="name">IT Clients: Users see only their assigned clients</field>
+            <field name="model_id" ref="model_it_client"/>
+            <field name="domain_force">[('id', 'in', user.client_ids.ids)]</field>
+            <field name="groups" eval="[(4, ref('group_it_asset_user'))]"/>
+        </record>
+
+        <record id="rule_it_equipment_users" model="ir.rule">
+            <field name="name">IT Equipment: Users see only their client equipment</field>
+            <field name="model_id" ref="model_it_equipment"/>
+            <field name="domain_force">[('client_id', 'in', user.client_ids.ids)]</field>
+            <field name="groups" eval="[(4, ref('group_it_asset_user'))]"/>
+        </record>
+
+        <record id="rule_it_contract_users" model="ir.rule">
+            <field name="name">IT Contracts: Users see only their client contracts</field>
+            <field name="model_id" ref="model_it_contract"/>
+            <field name="domain_force">[('client_id', 'in', user.client_ids.ids)]</field>
+            <field name="groups" eval="[(4, ref('group_it_asset_user'))]"/>
+        </record>
+
+        <record id="rule_it_incident_users" model="ir.rule">
+            <field name="name">IT Incidents: Users see only their client incidents</field>
+            <field name="model_id" ref="model_it_incident"/>
+            <field name="domain_force">[('client_id', 'in', user.client_ids.ids)]</field>
+            <field name="groups" eval="[(4, ref('group_it_asset_user'))]"/>
+        </record>
+
+        <record id="rule_it_intervention_users" model="ir.rule">
+            <field name="name">IT Interventions: Users see only their client interventions</field>
+            <field name="model_id" ref="model_it_intervention"/>
+            <field name="domain_force">[('client_id', 'in', user.client_ids.ids)]</field>
+            <field name="groups" eval="[(4, ref('group_it_asset_user'))]"/>
+        </record>
+
+        <record id="rule_it_license_users" model="ir.rule">
+            <field name="name">IT Licenses: Users see only their client licenses</field>
+            <field name="model_id" ref="model_it_license"/>
+            <field name="domain_force">[('client_id', 'in', user.client_ids.ids)]</field>
+            <field name="groups" eval="[(4, ref('group_it_asset_user'))]"/>
+        </record>
+
+        <record id="rule_it_alert_users" model="ir.rule">
+            <field name="name">IT Alerts: Users see only their client alerts</field>
+            <field name="model_id" ref="model_it_alert"/>
+            <field name="domain_force">[('client_id', 'in', user.client_ids.ids)]</field>
+            <field name="groups" eval="[(4, ref('group_it_asset_user'))]"/>
+        </record>
+
+        <record id="rule_it_billing_users" model="ir.rule">
+            <field name="name">IT Billings: Users see only their client billings</field>
+            <field name="model_id" ref="model_it_billing"/>
+            <field name="domain_force">[('client_id', 'in', user.client_ids.ids)]</field>
+            <field name="groups" eval="[(4, ref('group_it_asset_user'))]"/>
+        </record>
+
+        <!-- Règles de sécurité pour les wizards - Utilisateurs -->
+        <record id="rule_it_create_invoice_wizard_users" model="ir.rule">
+            <field name="name">Create Invoice Wizard: Users see only their contracts</field>
+            <field name="model_id" ref="model_it_create_invoice_wizard"/>
+            <field name="domain_force">[('contract_id.client_id', 'in', user.client_ids.ids)]</field>
+            <field name="groups" eval="[(4, ref('group_it_asset_user'))]"/>
+        </record>
+
+        <record id="rule_it_equipment_assignment_wizard_users" model="ir.rule">
+            <field name="name">Equipment Assignment Wizard: Users see only their equipment</field>
+            <field name="model_id" ref="model_it_equipment_assignment_wizard"/>
+            <field name="domain_force">[('equipment_id.client_id', 'in', user.client_ids.ids)]</field>
+            <field name="groups" eval="[(4, ref('group_it_asset_user'))]"/>
+        </record>
+
+        <!-- Règles globales pour les gestionnaires -->
+        <record id="rule_it_client_manager" model="ir.rule">
+            <field name="name">IT Clients: Managers see all</field>
+            <field name="model_id" ref="model_it_client"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_it_asset_manager'))]"/>
+        </record>
+
+        <record id="rule_it_equipment_manager" model="ir.rule">
+            <field name="name">IT Equipment: Managers see all</field>
+            <field name="model_id" ref="model_it_equipment"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_it_asset_manager'))]"/>
+        </record>
+
+        <record id="rule_it_contract_manager" model="ir.rule">
+            <field name="name">IT Contracts: Managers see all</field>
+            <field name="model_id" ref="model_it_contract"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_it_asset_manager'))]"/>
+        </record>
+
+        <record id="rule_it_incident_manager" model="ir.rule">
+            <field name="name">IT Incidents: Managers see all</field>
+            <field name="model_id" ref="model_it_incident"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_it_asset_manager'))]"/>
+        </record>
+
+        <record id="rule_it_intervention_manager" model="ir.rule">
+            <field name="name">IT Interventions: Managers see all</field>
+            <field name="model_id" ref="model_it_intervention"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_it_asset_manager'))]"/>
+        </record>
+
+        <record id="rule_it_license_manager" model="ir.rule">
+            <field name="name">IT Licenses: Managers see all</field>
+            <field name="model_id" ref="model_it_license"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_it_asset_manager'))]"/>
+        </record>
+
+        <record id="rule_it_alert_manager" model="ir.rule">
+            <field name="name">IT Alerts: Managers see all</field>
+            <field name="model_id" ref="model_it_alert"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_it_asset_manager'))]"/>
+        </record>
+
+        <record id="rule_it_billing_manager" model="ir.rule">
+            <field name="name">IT Billings: Managers see all</field>
+            <field name="model_id" ref="model_it_billing"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_it_asset_manager'))]"/>
+        </record>
+
+        <!-- Règles pour les wizards - Managers -->
+        <record id="rule_it_create_invoice_wizard_manager" model="ir.rule">
+            <field name="name">Create Invoice Wizard: Managers see all</field>
+            <field name="model_id" ref="model_it_create_invoice_wizard"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_it_asset_manager'))]"/>
+        </record>
+
+        <record id="rule_it_equipment_assignment_wizard_manager" model="ir.rule">
+            <field name="name">Equipment Assignment Wizard: Managers see all</field>
+            <field name="model_id" ref="model_it_equipment_assignment_wizard"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_it_asset_manager'))]"/>
+        </record>
+
+        <!-- Règles pour les techniciens -->
+        <record id="rule_it_technician_user" model="ir.rule">
+            <field name="name">Techniciens: Lecture seule pour les utilisateurs</field>
+            <field name="model_id" ref="model_it_technician"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_it_asset_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_it_technician_manager" model="ir.rule">
+            <field name="name">Techniciens: Accès total pour les managers</field>
+            <field name="model_id" ref="model_it_technician"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_it_asset_manager'))]"/>
+        </record>
+
+        <!-- Règles d'accès pour le portail -->
+        <record id="rule_equipment_portal_access" model="ir.rule">
+            <field name="name">Equipment Portal Access</field>
+            <field name="model_id" ref="model_it_equipment"/>
+            <field name="domain_force">[('client_id.partner_id', '=', user.partner_id.id)]</field>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        </record>
+
+        <record id="rule_contract_portal_access" model="ir.rule">
+            <field name="name">Contract Portal Access</field>
+            <field name="model_id" ref="model_it_contract"/>
+            <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        </record>
+
+        <record id="rule_incident_portal_access" model="ir.rule">
+            <field name="name">Incident Portal Access</field>
+            <field name="model_id" ref="model_it_incident"/>
+            <field name="domain_force">[('client_id.partner_id', '=', user.partner_id.id)]</field>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        </record>
+
+        <record id="rule_invoice_portal_access" model="ir.rule">
+            <field name="name">Invoice Portal Access</field>
+            <field name="model_id" ref="account.model_account_move"/>
+            <field name="domain_force">[('partner_id', '=', user.partner_id.id), ('move_type', 'in', ('out_invoice', 'out_refund'))]</field>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        </record>
+        
+        <!-- Règles de sécurité pour les abonnements IT -->
+        <record id="rule_it_subscription_users" model="ir.rule">
+            <field name="name">IT Subscriptions: Users see only their client subscriptions</field>
+            <field name="model_id" ref="model_it_subscription"/>
+            <field name="domain_force">[('client_id', 'in', user.client_ids.ids)]</field>
+            <field name="groups" eval="[(4, ref('group_it_asset_user'))]"/>
+        </record>
+        
+        <record id="rule_it_subscription_portal" model="ir.rule">
+            <field name="name">IT Subscriptions: Portal users see only their subscriptions</field>
+            <field name="model_id" ref="model_it_subscription"/>
+            <field name="domain_force">[('client_id.partner_id', '=', user.partner_id.id)]</field>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        </record>
+        
+        <record id="rule_it_subscription_managers" model="ir.rule">
+            <field name="name">IT Subscriptions: Managers see all subscriptions</field>
+            <field name="model_id" ref="model_it_subscription"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_it_asset_manager'))]"/>
+        </record>
+        
+        <!-- Règles de sécurité pour les niveaux de service -->
+        <record id="rule_it_service_level_users" model="ir.rule">
+            <field name="name">IT Service Levels: Users see all service levels</field>
+            <field name="model_id" ref="model_it_service_level"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_it_asset_user'))]"/>
+        </record>
+        
+        <record id="rule_it_service_level_portal" model="ir.rule">
+            <field name="name">IT Service Levels: Portal users see all service levels</field>
+            <field name="model_id" ref="model_it_service_level"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        </record>
+        
+        <!-- Règles de sécurité pour les types d'équipement -->
+        <record id="rule_it_equipment_type_users" model="ir.rule">
+            <field name="name">IT Equipment Types: Users see all equipment types</field>
+            <field name="model_id" ref="model_it_equipment_type"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_it_asset_user'))]"/>
+        </record>
+        
+        <!-- Règles de sécurité pour les certifications -->
+        <record id="rule_it_certification_users" model="ir.rule">
+            <field name="name">IT Certifications: Users see all certifications</field>
+            <field name="model_id" ref="model_it_certification"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_it_asset_user'))]"/>
+        </record>
+        
+        <!-- Les certifications sont visibles par tous les utilisateurs, pas besoin de règle restrictive -->
+        <!-- La relation avec les techniciens est gérée dans le modèle it.technician -->
+    </data>
+</odoo>

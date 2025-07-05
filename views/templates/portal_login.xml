@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Page d'authentification directe pour le portail IT Asset Management -->
+    <template id="portal_login_signup" name="Portal Login and Signup">
+        <t t-call="web.frontend_layout">
+            <div class="container mt-5">
+                <div class="row">
+                    <div class="col-md-6 offset-md-3">
+                        <div class="card">
+                            <div class="card-header text-center bg-primary text-white">
+                                <h3>IT Asset Management Portal</h3>
+                                <p class="mb-0">Accédez à vos équipements, contrats, tickets et factures</p>
+                            </div>
+                            <div class="card-body">
+                                <!-- Formulaire de connexion -->
+                                <form t-if="form_visible == 'login'" method="post" t-attf-action="/web/login">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <input type="hidden" name="redirect" t-att-value="redirect"/>
+                                    
+                                    <div t-if="error" class="alert alert-danger">
+                                        <t t-esc="error"/>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="login" class="form-label">Email</label>
+                                        <input type="text" name="login" id="login" class="form-control" required="required" autofocus="autofocus"/>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="password" class="form-label">Mot de passe</label>
+                                        <input type="password" name="password" id="password" class="form-control" required="required"/>
+                                    </div>
+                                    
+                                    <div class="d-grid gap-2">
+                                        <button type="submit" class="btn btn-primary">Se connecter</button>
+                                    </div>
+                                    
+                                    <div class="mt-3 text-center">
+                                        <p>Vous n'avez pas de compte? <a href="/portal-client?form=signup">Inscrivez-vous</a></p>
+                                    </div>
+                                </form>
+                                
+                                <!-- Formulaire d'inscription -->
+                                <form t-if="form_visible == 'signup'" method="post" t-attf-action="/client/register">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <input type="hidden" name="redirect" t-att-value="redirect"/>
+                                    
+                                    <div t-if="error" class="alert alert-danger">
+                                        <t t-esc="error"/>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="name" class="form-label">Nom complet</label>
+                                        <input type="text" name="name" id="name" class="form-control" required="required"/>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="company_name" class="form-label">Nom de l'entreprise</label>
+                                        <input type="text" name="company_name" id="company_name" class="form-control" required="required"/>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="phone" class="form-label">Téléphone</label>
+                                        <input type="tel" name="phone" id="phone" class="form-control"/>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="client_type" class="form-label">Type de client</label>
+                                        <select name="client_type" id="client_type" class="form-select" required="required">
+                                            <option value="">-- Sélectionnez --</option>
+                                            <option value="enterprise">Entreprise</option>
+                                            <option value="government">Gouvernement</option>
+                                            <option value="education">Éducation</option>
+                                            <option value="nonprofit">Association</option>
+                                            <option value="individual">Particulier</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="login" class="form-label">Email</label>
+                                        <input type="email" name="login" id="login" class="form-control" required="required"/>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="password" class="form-label">Mot de passe</label>
+                                        <input type="password" name="password" id="password" class="form-control" required="required"/>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="confirm_password" class="form-label">Confirmer le mot de passe</label>
+                                        <input type="password" name="confirm_password" id="confirm_password" class="form-control" required="required"/>
+                                    </div>
+                                    
+                                    <div class="d-grid gap-2">
+                                        <button type="submit" class="btn btn-primary">Créer un compte</button>
+                                    </div>
+                                    
+                                    <div class="mt-3 text-center">
+                                        <p>Vous avez déjà un compte? <a href="/portal-client?form=login">Connectez-vous</a></p>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Activer l'inscription libre des utilisateurs via une fonction -->
+        <function model="ir.config_parameter" name="set_param">
+            <value>auth_signup.allow_uninvited</value>
+            <value>True</value>
+        </function>
+        
+        <!-- Activer la possibilité de s'inscrire via le portail -->
+        <function model="ir.config_parameter" name="set_param">
+            <value>auth_signup.reset_password</value>
+            <value>True</value>
+        </function>
+        
+        <!-- Désactiver la confirmation par email - optionnel -->
+        <function model="ir.config_parameter" name="set_param">
+            <value>auth_signup.invitation_scope</value>
+            <value>b2b</value>
+        </function>
+    </data>
+</odoo> 

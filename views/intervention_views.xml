@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vue Liste -->
+    <record id="view_it_intervention_list" model="ir.ui.view">
+        <field name="name">it.intervention.list</field>
+        <field name="model">it.intervention</field>
+        <field name="arch" type="xml">
+            <list string="Interventions">
+                <field name="name"/>
+                <field name="client_id"/>
+                <field name="intervention_date"/>
+                <field name="equipment_id"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Vue Kanban -->
+    <record id="view_it_intervention_kanban" model="ir.ui.view">
+        <field name="name">it.intervention.kanban</field>
+        <field name="model">it.intervention</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="name"/>
+                <field name="client_id"/>
+                <field name="equipment_id"/>
+                <field name="intervention_date"/>
+                <field name="state"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="oe_kanban_content">
+                                <strong><field name="name"/></strong>
+                                <div>
+                                    <span class="badge badge-pill" t-att-class="{
+                                        'badge-success': record.state.raw_value == 'done',
+                                        'badge-warning': record.state.raw_value == 'planned',
+                                        'badge-danger': record.state.raw_value == 'cancelled'
+                                    }">
+                                        <field name="state"/>
+                                    </span>
+                                </div>
+                                <div><field name="client_id"/></div>
+                                <div><field name="equipment_id"/></div>
+                                <div><field name="intervention_date" widget="date"/></div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Vue Formulaire -->
+    <record id="view_it_intervention_form" model="ir.ui.view">
+        <field name="name">it.intervention.form</field>
+        <field name="model">it.intervention</field>
+        <field name="arch" type="xml">
+            <form string="Intervention">
+                <header>
+                    <button name="action_done" type="object" string="Terminer" invisible="state != 'planned'"/>
+                    <button name="action_cancel" type="object" string="Annuler" invisible="state != 'planned'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="planned,done,cancelled"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="ex: INT/2025/001" required="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="client_id" readonly="1"/>
+                            <field name="equipment_id" required="1"/>
+                            <field name="contract_id"/>
+                            <field name="incident_id"/>
+                        </group>
+                        <group>
+                            <field name="intervention_date" required="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description">
+                            <field name="description"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vue Recherche -->
+    <record id="view_it_intervention_search" model="ir.ui.view">
+        <field name="name">it.intervention.search</field>
+        <field name="model">it.intervention</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher une intervention">
+                <field name="name"/>
+                <field name="client_id"/>
+                <field name="equipment_id"/>
+                <separator/>
+                <filter name="planned" string="Planifiée" domain="[('state', '=', 'planned')]"/>
+                <filter name="done" string="Terminée" domain="[('state', '=', 'done')]"/>
+                <filter name="cancelled" string="Annulée" domain="[('state', '=', 'cancelled')]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_by_client" string="Client" context="{'group_by': 'client_id'}"/>
+                    <filter name="group_by_state" string="État" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_it_intervention" model="ir.actions.act_window">
+        <field name="name">Interventions</field>
+        <field name="res_model">it.intervention</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="view_it_intervention_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créez votre première intervention
+            </p>
+        </field>
+    </record>
+</odoo>

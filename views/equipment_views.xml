@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vue Liste -->
+    <record id="view_it_equipment_list" model="ir.ui.view">
+        <field name="name">it.equipment.list</field>
+        <field name="model">it.equipment</field>
+        <field name="arch" type="xml">
+            <list string="Équipements">
+                <field name="name"/>
+                <field name="type_id"/>
+                <field name="serial_number"/>
+                <field name="category"/>
+                <field name="client_id"/>
+                <field name="state"/>
+                <field name="active" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Vue Kanban -->
+    <record id="view_it_equipment_kanban" model="ir.ui.view">
+        <field name="name">it.equipment.kanban</field>
+        <field name="model">it.equipment</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="name"/>
+                <field name="type_id"/>
+                <field name="serial_number"/>
+                <field name="category"/>
+                <field name="client_id"/>
+                <field name="state"/>
+                <field name="active"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="oe_kanban_content">
+                                <strong><field name="name"/></strong>
+                                <div><field name="type_id"/></div>
+                                <div><field name="serial_number"/></div>
+                                <div>
+                                    <span class="badge badge-pill" t-att-class="{
+                                        'badge-success': record.state.raw_value == 'available',
+                                        'badge-primary': record.state.raw_value == 'assigned',
+                                        'badge-warning': record.state.raw_value == 'maintenance',
+                                        'badge-secondary': !record.active.raw_value
+                                    }">
+                                        <field name="state"/>
+                                    </span>
+                                </div>
+                                <div><field name="client_id"/></div>
+                                <div><field name="category"/></div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Vue Formulaire -->
+    <record id="view_it_equipment_form" model="ir.ui.view">
+        <field name="name">it.equipment.form</field>
+        <field name="model">it.equipment</field>
+        <field name="arch" type="xml">
+            <form string="Équipement">
+                <header>
+                    <field name="state" widget="statusbar" 
+                           statusbar_visible="available,assigned,maintenance"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Archivé" invisible="active"/>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Nom de l'équipement"/></h1>
+                        <h2><field name="serial_number" placeholder="Numéro de série"/></h2>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="type_id" required="1"/>
+                            <field name="category"/>
+                            <field name="client_id"/>
+                        </group>
+                        <group>
+                            <field name="purchase_date"/>
+                            <field name="warranty_end"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vue Recherche -->
+    <record id="view_it_equipment_search" model="ir.ui.view">
+        <field name="name">it.equipment.search</field>
+        <field name="model">it.equipment</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher un équipement">
+                <field name="name"/>
+                <field name="type_id"/>
+                <field name="serial_number"/>
+                <field name="category"/>
+                <field name="client_id"/>
+                <separator/>
+                <filter name="available" string="Disponible" domain="[('state', '=', 'available')]"/>
+                <filter name="assigned" string="Assigné" domain="[('state', '=', 'assigned')]"/>
+                <filter name="maintenance" string="En maintenance" domain="[('state', '=', 'maintenance')]"/>
+                <separator/>
+                <filter name="active" string="Actifs" domain="[('active', '=', True)]"/>
+                <filter name="inactive" string="Archivés" domain="[('active', '=', False)]"/>
+                <searchpanel>
+                    <field name="type_id" string="Type" enable_counters="1"/>
+                    <field name="category" string="Catégorie" enable_counters="1"/>
+                    <field name="client_id" string="Client" enable_counters="1"/>
+                    <field name="state" string="État" enable_counters="1"/>
+                </searchpanel>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_it_equipment" model="ir.actions.act_window">
+        <field name="name">Équipements</field>
+        <field name="res_model">it.equipment</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="view_it_equipment_search"/>
+        <field name="context">{'search_default_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créez votre premier équipement
+            </p>
+            <p>
+                Enregistrez ici tous vos équipements informatiques.
+            </p>
+        </field>
+    </record>
+</odoo>

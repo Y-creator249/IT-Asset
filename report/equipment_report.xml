@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_equipment_document">
+        <t t-call="web.external_layout">
+            <div class="page">
+                <h2>Fiche Équipement</h2>
+                <div class="row mt32 mb32">
+                    <div class="col-6">
+                        <strong>Nom:</strong>
+                        <span t-field="doc.name"/>
+                        <br/>
+                        <strong>Numéro de série:</strong>
+                        <span t-field="doc.serial_number"/>
+                        <br/>
+                        <strong>Client:</strong>
+                        <span t-field="doc.client_id.name"/>
+                    </div>
+                    <div class="col-6">
+                        <strong>Catégorie:</strong>
+                        <span t-field="doc.category_id.name"/>
+                        <br/>
+                        <strong>État:</strong>
+                        <span t-field="doc.state"/>
+                        <br/>
+                        <strong>Date d'achat:</strong>
+                        <span t-field="doc.purchase_date"/>
+                    </div>
+                </div>
+
+                <h3>Garantie</h3>
+                <div class="row mt32 mb32">
+                    <div class="col-12">
+                        <strong>Date de fin de garantie:</strong>
+                        <span t-field="doc.warranty_date"/>
+                    </div>
+                </div>
+
+                <h3>Notes</h3>
+                <div class="row mt32 mb32">
+                    <div class="col-12">
+                        <span t-field="doc.notes"/>
+                    </div>
+                </div>
+
+                <t t-if="doc.contract_ids">
+                    <h3>Contrats associés</h3>
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Référence</th>
+                                <th>Date de début</th>
+                                <th>Date de fin</th>
+                                <th>État</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="doc.contract_ids" t-as="contract">
+                                <td><span t-field="contract.name"/></td>
+                                <td><span t-field="contract.start_date"/></td>
+                                <td><span t-field="contract.end_date"/></td>
+                                <td><span t-field="contract.state"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </t>
+            </div>
+        </t>
+    </template>
+
+    <template id="report_equipment">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="it_asset_management.report_equipment_document"/>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_report_equipment" model="ir.actions.report">
+        <field name="name">Fiche équipement</field>
+        <field name="model">it.equipment</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">it_asset_management.report_equipment</field>
+        <field name="report_file">it_asset_management.report_equipment</field>
+        <field name="binding_model_id" ref="model_it_equipment"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>

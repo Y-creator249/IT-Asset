@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Séquence pour les clients -->
+        <record id="seq_it_client" model="ir.sequence">
+            <field name="name">Séquence Client</field>
+            <field name="code">it.client</field>
+            <field name="prefix">CLI/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Séquence pour les équipements -->
+        <record id="seq_it_equipment" model="ir.sequence">
+            <field name="name">Séquence Équipement</field>
+            <field name="code">it.equipment</field>
+            <field name="prefix">EQP/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Séquence pour les contrats -->
+        <record id="seq_it_contract" model="ir.sequence">
+            <field name="name">Séquence Contrat</field>
+            <field name="code">it.contract</field>
+            <field name="prefix">CTR/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Séquence pour les tickets -->
+        <record id="seq_it_ticket" model="ir.sequence">
+            <field name="name">Séquence Ticket</field>
+            <field name="code">it.ticket</field>
+            <field name="prefix">TCK/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Séquence pour les facturations -->
+        <record id="seq_it_billing" model="ir.sequence">
+            <field name="name">Séquence Facturation IT</field>
+            <field name="code">it.billing</field>
+            <field name="prefix">FACT/%(year)s/</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Séquence pour les interventions -->
+        <record id="seq_it_intervention" model="ir.sequence">
+            <field name="name">Séquence Intervention IT</field>
+            <field name="code">it.intervention</field>
+            <field name="prefix">INT/%(year)s/</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo>

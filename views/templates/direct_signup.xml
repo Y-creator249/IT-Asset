@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="direct_signup_page" name="Création Directe de Compte">
+        <t t-call="web.frontend_layout">
+            <div class="container mt-5">
+                <div class="row">
+                    <div class="col-md-8 offset-md-2">
+                        <div class="card shadow">
+                            <div class="card-header bg-primary text-white py-3">
+                                <h3 class="mb-0">Création rapide d'un compte client</h3>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="text-center mb-4">
+                                    <p>Utilisez cette page pour créer un compte client test rapidement.</p>
+                                </div>
+                                
+                                <div t-if="error" class="alert alert-danger">
+                                    <t t-esc="error"/>
+                                </div>
+                                
+                                <div t-if="success" class="alert alert-success">
+                                    <p><t t-esc="success"/></p>
+                                    <a href="/my" class="btn btn-primary">Accéder au tableau de bord</a>
+                                </div>
+                                
+                                <form method="post" action="/client/direct_create" class="mb-3">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="name" class="form-label">Nom complet</label>
+                                            <input type="text" name="name" id="name" class="form-control" 
+                                                   value="Client Test" required="required"/>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="company_name" class="form-label">Nom de l'entreprise</label>
+                                            <input type="text" name="company_name" id="company_name" class="form-control" 
+                                                   value="Entreprise Test" required="required"/>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="email" class="form-label">Email</label>
+                                            <input type="email" name="email" id="email" class="form-control" 
+                                                   value="client.test@example.com" required="required"/>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="password" class="form-label">Mot de passe</label>
+                                            <input type="password" name="password" id="password" class="form-control" 
+                                                   value="Test123" required="required"/>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-primary btn-lg">Créer un compte maintenant</button>
+                                    </div>
+                                </form>
+                                
+                                <hr class="my-4"/>
+                                
+                                <div class="text-center">
+                                    <p>Ou utilisez la création express avec des valeurs prédéfinies</p>
+                                    <form method="post" action="/client/express_create" class="mt-3">
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                        <div class="row justify-content-center">
+                                            <div class="col-md-6 mb-3">
+                                                <input type="email" name="email" class="form-control" 
+                                                       placeholder="Votre email" required="required"/>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <input type="text" name="name" class="form-control" 
+                                                       placeholder="Votre nom" required="required"/>
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn btn-success">Créer un compte express</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

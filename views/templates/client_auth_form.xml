@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Template personnalisé pour l'authentification des clients IT Asset Management -->
+    <template id="client_auth_form" name="IT Asset Client Authentication">
+        <t t-call="web.frontend_layout">
+            <div class="container mt-5">
+                <div class="row">
+                    <div class="col-md-6 offset-md-3">
+                        <div class="card shadow">
+                            <div class="card-header bg-primary text-white text-center py-3">
+                                <h3 class="mb-0">IT Asset Management</h3>
+                                <p class="mb-0">Accédez à vos équipements, contrats et services</p>
+                            </div>
+                            <div class="card-body p-4">
+                                <!-- Onglets pour alterner entre connexion et inscription -->
+                                <ul class="nav nav-tabs mb-4" role="tablist">
+                                    <li class="nav-item w-50 text-center">
+                                        <a t-att-class="'nav-link ' + ('active' if form_view == 'login' else '')" 
+                                           href="/client/auth?form=login">Connexion</a>
+                                    </li>
+                                    <li class="nav-item w-50 text-center">
+                                        <a t-att-class="'nav-link ' + ('active' if form_view == 'signup' else '')" 
+                                           href="/client/auth?form=signup">Inscription</a>
+                                    </li>
+                                </ul>
+                                
+                                <!-- Formulaire de connexion -->
+                                <form t-if="form_view == 'login'" method="post" action="/web/login" class="oe_login_form">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <input type="hidden" name="redirect" t-att-value="redirect"/>
+                                    
+                                    <div t-if="error" class="alert alert-danger">
+                                        <t t-esc="error"/>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="login" class="form-label">Email</label>
+                                        <input type="text" name="login" id="login" class="form-control" 
+                                               required="required" autofocus="autofocus"/>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="password" class="form-label">Mot de passe</label>
+                                        <input type="password" name="password" id="password" class="form-control" 
+                                               required="required"/>
+                                    </div>
+                                    
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-primary btn-lg">Se connecter</button>
+                                    </div>
+                                </form>
+                                
+                                <!-- Formulaire d'inscription -->
+                                <form t-if="form_view == 'signup'" method="post" action="#" t-att-action="'/client/register?redirect=%s' % redirect if redirect else '/client/register'" class="oe_signup_form">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <input type="hidden" name="redirect" t-att-value="redirect"/>
+                                    
+                                    <div t-if="error" class="alert alert-danger">
+                                        <t t-esc="error"/>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="name" class="form-label">Nom complet</label>
+                                        <input type="text" name="name" id="name" class="form-control" 
+                                               required="required"/>
+                                    </div>
+                                    
+                                    <!-- Champs cachés avec valeurs par défaut -->
+                                    <input type="hidden" name="company_name" value=""/>
+                                    <input type="hidden" name="phone" value=""/>
+                                    <input type="hidden" name="client_type" value="enterprise"/>
+                                    
+                                    <div class="mb-3">
+                                        <label for="login" class="form-label">Email</label>
+                                        <input type="email" name="login" id="login" class="form-control" 
+                                               required="required"/>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="password" class="form-label">Mot de passe</label>
+                                        <input type="password" name="password" id="password" class="form-control" 
+                                               required="required"/>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="confirm_password" class="form-label">Confirmer le mot de passe</label>
+                                        <input type="password" name="confirm_password" id="confirm_password" 
+                                               class="form-control" required="required"/>
+                                    </div>
+                                    
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-primary btn-lg">Créer un compte</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Template pour le formulaire de création rapide de client depuis le portail -->
+    <template id="portal_create_client" name="Création de Client">
+        <t t-call="portal.portal_layout">
+            <div class="container mt-4 mb-5">
+                <div class="row">
+                    <div class="col-lg-8 offset-lg-2">
+                        <div class="card shadow-sm border-0">
+                            <div class="card-header bg-primary text-white">
+                                <h3 class="mb-0">Créer un compte client</h3>
+                                <p class="mb-0">Remplissez ce formulaire pour créer ou mettre à jour votre compte client</p>
+                            </div>
+                            <div class="card-body p-4">
+                                <form action="/portal/create_client" method="post">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="name" class="form-label">Nom de l'entreprise</label>
+                                            <input type="text" name="name" id="name" class="form-control" 
+                                                   t-att-value="request.env.user.partner_id.name" required="required"/>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="client_type" class="form-label">Type de client</label>
+                                            <select name="client_type" id="client_type" class="form-control" required="required">
+                                                <option value="enterprise">Entreprise</option>
+                                                <option value="government">Gouvernement</option>
+                                                <option value="education">Éducation</option>
+                                                <option value="nonprofit">Association</option>
+                                                <option value="individual">Particulier</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="email" class="form-label">Email</label>
+                                            <input type="email" name="email" id="email" class="form-control" 
+                                                   t-att-value="request.env.user.partner_id.email or request.env.user.login" required="required"/>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="phone" class="form-label">Téléphone</label>
+                                            <input type="tel" name="phone" id="phone" class="form-control" 
+                                                   t-att-value="request.env.user.partner_id.phone"/>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="d-grid mt-4">
+                                        <button type="submit" class="btn btn-primary btn-lg">Enregistrer le compte client</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

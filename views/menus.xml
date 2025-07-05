@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Root Menu -->
+    <menuitem id="menu_it_asset_root"
+              name="IT Asset"
+              web_icon="it_asset_management,static/description/icon.png"
+              sequence="10"/>
+
+    <!-- Main Menus -->
+    <menuitem id="menu_it_client"
+              name="Clients"
+              parent="menu_it_asset_root"
+              action="action_it_client"
+              sequence="10"/>
+
+    <menuitem id="menu_it_equipment"
+              name="Équipements"
+              parent="menu_it_asset_root"
+              action="action_it_equipment"
+              sequence="30"/>
+
+    <menuitem id="menu_it_contract"
+              name="Contrats"
+              parent="menu_it_asset_root"
+              action="action_it_contract"
+              sequence="40"/>
+    
+    <menuitem id="menu_it_incident"
+              name="Incidents"
+              parent="menu_it_asset_root"
+              action="action_it_incident"
+              sequence="50"/>
+
+    <menuitem id="menu_it_intervention"
+              name="Interventions"
+              parent="menu_it_asset_root"
+              action="action_it_intervention"
+              sequence="60"/>
+
+    <menuitem id="menu_it_license"
+              name="Licences"
+              parent="menu_it_asset_root"
+              action="action_it_license"
+              sequence="70"/>
+
+    <menuitem id="menu_it_billing"
+              name="Facturations"
+              parent="menu_it_asset_root"
+              action="action_it_billing"
+              sequence="80"/>
+
+    <!-- Configuration Menu -->
+    <menuitem id="menu_it_asset_config"
+              name="Configuration"
+              parent="menu_it_asset_root"
+              sequence="100"/>
+
+    <menuitem id="menu_it_category"
+              name="Catégories"
+              parent="menu_it_asset_config"
+              action="action_it_category"
+              sequence="10"/>
+</odoo>

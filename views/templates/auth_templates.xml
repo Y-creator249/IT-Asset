@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Custom Client Signup Form -->
+    <template id="client_signup" name="IT Asset Management Client Signup" inherit_id="auth_signup.signup" primary="True">
+        <xpath expr="//form" position="replace">
+            <form class="oe_signup_form" role="form" method="post" action="/client/register">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                
+                <div class="alert alert-danger" t-if="error">
+                    <t t-esc="error"/>
+                </div>
+                
+                <div class="mb-3">
+                    <h3 class="text-center">IT Asset Management Portal</h3>
+                    <p class="text-center">Créez un compte pour accéder à vos équipements, contrats et factures</p>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="name" class="form-label">Nom complet</label>
+                    <input type="text" name="name" t-att-value="name" id="name" class="form-control" required="required" t-att-readonly="token and 'readonly'" />
+                </div>
+                
+                <div class="mb-3">
+                    <label for="company_name" class="form-label">Nom de l'entreprise</label>
+                    <input type="text" name="company_name" t-att-value="company_name" id="company_name" class="form-control" required="required" />
+                </div>
+                
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Téléphone</label>
+                    <input type="tel" name="phone" t-att-value="phone" id="phone" class="form-control" />
+                </div>
+                
+                <div class="mb-3">
+                    <label for="client_type" class="form-label">Type de client</label>
+                    <select name="client_type" id="client_type" class="form-select" required="required">
+                        <option value="">-- Sélectionnez --</option>
+                        <t t-foreach="client_types" t-as="client_type">
+                            <option t-att-value="client_type[0]" t-esc="client_type[1]" />
+                        </t>
+                    </select>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="login" class="form-label">Email</label>
+                    <input type="email" name="login" t-att-value="login" id="login" class="form-control" required="required" t-att-readonly="token and 'readonly'" />
+                </div>
+                
+                <div class="mb-3">
+                    <label for="password" class="form-label">Mot de passe</label>
+                    <input type="password" name="password" id="password" class="form-control" required="required"/>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="confirm_password" class="form-label">Confirmer le mot de passe</label>
+                    <input type="password" name="confirm_password" id="confirm_password" class="form-control" required="required"/>
+                </div>
+                
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary">Créer un compte</button>
+                </div>
+                
+                <div class="mt-3 text-center">
+                    <p>Vous avez déjà un compte? <a href="/web/login">Connectez-vous</a></p>
+                </div>
+            </form>
+        </xpath>
+    </template>
+    
+    <!-- Redirect to Signup Page -->
+    <template id="auth_signup_redirect" name="IT Asset Management Login Redirect">
+        <t t-call="web.login_layout">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6 offset-md-3">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <h3>IT Asset Management Portal</h3>
+                                <p>Accédez à vos équipements, contrats, tickets et factures</p>
+                                <div class="d-grid gap-2 mb-3">
+                                    <a href="/web/login" class="btn btn-primary">Se connecter</a>
+                                </div>
+                                <div class="d-grid gap-2">
+                                    <a href="/web/signup" class="btn btn-outline-primary">Créer un compte</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+    
+    <!-- Ce template a été remplacé par login_template.xml -->
+    <!-- Template pour modifier le lien de déconnexion -->    
+    <template id="it_asset_user_dropdown" name="IT Asset Management User Dropdown" inherit_id="portal.user_dropdown">
+        <xpath expr="//a[@id='o_logout']" position="attributes">
+            <attribute name="t-attf-href">/it/logout</attribute>
+        </xpath>
+    </template>
+</odoo>

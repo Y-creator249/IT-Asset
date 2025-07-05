@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- DASHBOARD / VUE D'ENSEMBLE -->
+    <template id="portal_dashboard" name="Tableau de bord">
+        <t t-call="portal.portal_layout">
+            <div class="container mb-4">
+                <!-- Message de succès après création d'un client -->
+                <div t-if="request.params.get('client_created')" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fa fa-check-circle mr-2"></i> <span t-esc="request.params.get('message') or 'Compte client créé avec succès!'"/>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&amp;times;</span>
+                    </button>
+                </div>
+                
+                <div class="row align-items-center">
+                    <div class="col-12 col-lg-8">
+                        <h1 class="mb-0">Tableau de bord</h1>
+                        <p>Bienvenue sur votre portail client. Retrouvez ici l'ensemble de vos équipements, contrats et services.</p>
+                    </div>
+                    <div class="col-12 col-lg-4 text-right">
+                        <a href="/client/direct_signup" class="btn btn-primary">
+                            <i class="fa fa-user-plus mr-1"></i> Créer un nouveau compte client
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container mb-4">
+                <div class="row">
+                    <!-- Card Équipements -->
+                    <div class="col-12 col-md-6 col-lg-4 mb-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-3">
+                                    <i class="fa fa-desktop fa-2x text-primary mr-3"></i>
+                                    <h5 class="card-title mb-0">Équipements</h5>
+                                </div>
+                                <p class="card-text">Vos équipements informatiques et leur statut.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge badge-primary badge-pill" t-esc="equipment_count"/>
+                                    <a href="/my/equipements" class="btn btn-sm btn-outline-primary">Voir tous</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card Contrats -->
+                    <div class="col-12 col-md-6 col-lg-4 mb-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-3">
+                                    <i class="fa fa-file-contract fa-2x text-success mr-3"></i>
+                                    <h5 class="card-title mb-0">Contrats</h5>
+                                </div>
+                                <p class="card-text">Vos contrats de maintenance et de service.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge badge-success badge-pill" t-esc="contract_count"/>
+                                    <a href="/my/contrats" class="btn btn-sm btn-outline-success">Voir tous</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card Abonnements -->
+                    <div class="col-12 col-md-6 col-lg-4 mb-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-3">
+                                    <i class="fa fa-sync fa-2x text-info mr-3"></i>
+                                    <h5 class="card-title mb-0">Abonnements</h5>
+                                </div>
+                                <p class="card-text">Vos services et licences récurrents.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge badge-info badge-pill" t-esc="subscription_count"/>
+                                    <a href="/my/abonnements" class="btn btn-sm btn-outline-info">Voir tous</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card Incidents -->
+                    <div class="col-12 col-md-6 col-lg-6 mb-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-3">
+                                    <i class="fa fa-exclamation-triangle fa-2x text-warning mr-3"></i>
+                                    <h5 class="card-title mb-0">Tickets &amp; Incidents</h5>
+                                </div>
+                                <p class="card-text">Vos demandes d'assistance et tickets ouverts.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge badge-warning badge-pill" t-esc="incident_count"/>
+                                    <div>
+                                        <a href="/my/incident/create" class="btn btn-sm btn-warning mr-2">Nouveau ticket</a>
+                                        <a href="/my/incidents" class="btn btn-sm btn-outline-warning">Voir tous</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card Factures -->
+                    <div class="col-12 col-md-6 col-lg-6 mb-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-3">
+                                    <i class="fa fa-file-invoice-dollar fa-2x text-danger mr-3"></i>
+                                    <h5 class="card-title mb-0">Factures</h5>
+                                </div>
+                                <p class="card-text">Vos factures et leur statut de paiement.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge badge-danger badge-pill" t-esc="invoice_count"/>
+                                    <a href="/my/factures" class="btn btn-sm btn-outline-danger">Voir toutes</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- LISTE DES ÉQUIPEMENTS -->
+    <template id="portal_equipements" name="Mes Équipements">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Mes Équipements</t>
+            </t>
+
+            <t t-if="not equipments">
+                <div class="alert alert-info">
+                    <p class="mb-0">Vous n'avez aucun équipement informatique à afficher.</p>
+                </div>
+            </t>
+
+            <t t-if="equipments">
+                <t t-call="portal.portal_table">
+                    <thead>
+                        <tr class="active">
+                            <th>Nom</th>
+                            <th>Type</th>
+                            <th>N° Série</th>
+                            <th class="text-center">État</th>
+                            <th t-attf-class="text-right{{ ' d-none d-md-table-cell' if pager['page_count'] > 1 else '' }}">Date d'achat</th>
+                            <th t-attf-class="text-right{{ ' d-none d-md-table-cell' if pager['page_count'] > 1 else '' }}">Fin garantie</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="equipments" t-as="equipment">
+                            <tr>
+                                <td>
+                                    <a t-attf-href="/my/equipement/#{equipment.id}">
+                                        <t t-esc="equipment.name"/>
+                                    </a>
+                                </td>
+                                <td>
+                                    <span t-field="equipment.type_id.name"/>
+                                </td>
+                                <td>
+                                    <span t-field="equipment.serial_number"/>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="equipment.state == 'available'">
+                                        <span class="badge badge-pill badge-success">Disponible</span>
+                                    </t>
+                                    <t t-elif="equipment.state == 'assigned'">
+                                        <span class="badge badge-pill badge-primary">Assigné</span>
+                                    </t>
+                                    <t t-elif="equipment.state == 'maintenance'">
+                                        <span class="badge badge-pill badge-warning">En maintenance</span>
+                                    </t>
+                                    <t t-else="">
+                                        <span class="badge badge-pill badge-secondary">Retiré</span>
+                                    </t>
+                                </td>
+                                <td t-attf-class="text-right{{ ' d-none d-md-table-cell' if pager['page_count'] > 1 else '' }}">
+                                    <span t-field="equipment.purchase_date"/>
+                                </td>
+                                <td t-attf-class="text-right{{ ' d-none d-md-table-cell' if pager['page_count'] > 1 else '' }}">
+                                    <t t-if="equipment.warranty_end">
+                                        <span t-field="equipment.warranty_end" t-options='{"widget": "date"}'/>
+                                    </t>
+                                    <t t-else="">
+                                        <span>-</span>
+                                    </t>
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </t>
+            </t>
+
+            <div class="o_portal_pager">
+                <t t-call="portal.pager"/>
+            </div>
+        </t>
+    </template>
+
+    <!-- DÉTAIL D'UN ÉQUIPEMENT -->
+    <template id="portal_equipement_detail" name="Détail Équipement">
+        <t t-call="portal.portal_layout">
+            <t t-set="o_portal_fullwidth_alert" groups="portal.group_portal">
+                <t t-call="portal.portal_back_button">
+                    <t t-set="backend_url" t-value="'/my/equipements'"/>
+                </t>
+            </t>
+
+            <div class="container">
+                <div class="row mt-4">
+                    <div class="col-lg-12">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-white">
+                                <div class="row">
+                                    <div class="col-12 col-md-8">
+                                        <h2 class="mb-0">
+                                            <span t-field="equipment.name"/>
+                                        </h2>
+                                    </div>
+                                    <div class="col-12 col-md-4 text-md-right">
+                                        <t t-if="equipment.state == 'available'">
+                                            <span class="badge badge-pill badge-success py-2 px-3">Disponible</span>
+                                        </t>
+                                        <t t-elif="equipment.state == 'assigned'">
+                                            <span class="badge badge-pill badge-primary py-2 px-3">Assigné</span>
+                                        </t>
+                                        <t t-elif="equipment.state == 'maintenance'">
+                                            <span class="badge badge-pill badge-warning py-2 px-3">En maintenance</span>
+                                        </t>
+                                        <t t-else="">
+                                            <span class="badge badge-pill badge-secondary py-2 px-3">Retiré</span>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-12 col-lg-6">
+                                        <h5 class="mb-3">Information générales</h5>
+                                        <div class="row mb-2">
+                                            <div class="col-sm-5 font-weight-bold">Type:</div>
+                                            <div class="col-sm-7"><span t-field="equipment.type_id.name"/></div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-sm-5 font-weight-bold">Catégorie:</div>
+                                            <div class="col-sm-7">
+                                                <t t-if="equipment.category == 'hardware'">
+                                                    <span>Matériel</span>
+                                                </t>
+                                                <t t-elif="equipment.category == 'software'">
+                                                    <span>Logiciel</span>
+                                                </t>
+                                                <t t-elif="equipment.category == 'network'">
+                                                    <span>Réseau</span>
+                                                </t>
+                                                <t t-elif="equipment.category == 'peripheral'">
+                                                    <span>Périphérique</span>
+                                                </t>
+                                                <t t-else="">
+                                                    <span>Autre</span>
+                                                </t>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-sm-5 font-weight-bold">Numéro de série:</div>
+                                            <div class="col-sm-7"><span t-field="equipment.serial_number"/></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-lg-6 mt-4 mt-lg-0">
+                                        <h5 class="mb-3">Informations de garantie</h5>
+                                        <div class="row mb-2">
+                                            <div class="col-sm-5 font-weight-bold">Date d'achat:</div>
+                                            <div class="col-sm-7"><span t-field="equipment.purchase_date"/></div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-sm-5 font-weight-bold">Fin de garantie:</div>
+                                            <div class="col-sm-7">
+                                                <t t-if="equipment.warranty_end">
+                                                    <span t-field="equipment.warranty_end"/>
+                                                    <t t-if="equipment.warranty_end &lt; context_today()">
+                                                        <span class="badge badge-danger ml-2">Expirée</span>
+                                                    </t>
+                                                </t>
+                                                <t t-else="">
+                                                    <span>Non spécifiée</span>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-white text-right">
+                                <a href="/my/incident/create" class="btn btn-warning">
+                                    <i class="fa fa-exclamation-triangle mr-2"/>
+                                    Signaler un incident
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>
